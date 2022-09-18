@@ -1,13 +1,17 @@
 package com.product.service.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+
 @Entity
+@Table(name = "tb_user")
 public class User implements Serializable {
     public static final long serializable = 1L;
 
@@ -19,9 +23,13 @@ public class User implements Serializable {
     private String email;
     private String phone;
     private String password;
-    //association
 
+    //association client.1 <--> orders.*
+    @JsonIgnore //triggering lazy loading from one to many sides
+    @OneToMany(mappedBy = "client")
+    private final List<Order> orders = new ArrayList<>();
 
+    //Constructors
     public User(){
     }
 
@@ -34,6 +42,7 @@ public class User implements Serializable {
     }
 
 
+    //getters and setters
     public Long getId() {
         return id;
     }
@@ -74,7 +83,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
 
+
+    //hashCode and equals
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
