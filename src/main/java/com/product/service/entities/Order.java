@@ -1,6 +1,7 @@
 package com.product.service.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.product.service.entities.enums.OrderStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +22,8 @@ public class Order implements Serializable {
     private Instant moment;
 
     //attribute type enums
-    //private OrderStatus orderStatus
+    private Integer orderStatus;
+
 
     //association orders.* <--> client.1
     @ManyToOne
@@ -31,9 +33,10 @@ public class Order implements Serializable {
     //Constructors
     public Order(){}
 
-    public Order(Long id, Instant moment, User client) {
+    public Order(Long id, Instant moment,OrderStatus orderStatus,  User client) {
         this.id = id;
         this.moment = moment;
+        setOrderStatus(orderStatus);
         this.client = client;
     }
 
@@ -63,9 +66,18 @@ public class Order implements Serializable {
         this.client = client;
     }
 
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(orderStatus);
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        if (orderStatus != null) {
+            this.orderStatus = orderStatus.getCode();
+        }
+    }
+
 
     //hashCode and equals
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
