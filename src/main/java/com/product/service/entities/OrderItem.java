@@ -1,5 +1,6 @@
 package com.product.service.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.product.service.entities.PKs.OrderItemPK;
 
 import javax.persistence.EmbeddedId;
@@ -15,7 +16,7 @@ public class OrderItem implements Serializable {
 
     //Attributes
     @EmbeddedId
-    private OrderItemPK id;
+    private OrderItemPK id = new OrderItemPK();
     private Integer quantity;
     private Double price;
 
@@ -32,6 +33,7 @@ public class OrderItem implements Serializable {
 
 
     //methods
+    @JsonIgnore
     public Order getOrder(){
         return id.getOrder();
     }

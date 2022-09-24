@@ -7,7 +7,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_order")
@@ -24,11 +26,13 @@ public class Order implements Serializable {
     //attribute type enums
     private Integer orderStatus;
 
-
     //association orders.* <--> client.1
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
+
+    @OneToMany(mappedBy = "id.order")
+    private Set<OrderItem> items = new HashSet<>();
 
     //Constructors
     public Order(){}
@@ -76,6 +80,9 @@ public class Order implements Serializable {
         }
     }
 
+    public Set<OrderItem> getItems() {
+        return items;
+    }
 
     //hashCode and equals
     @Override
