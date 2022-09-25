@@ -38,4 +38,14 @@ public class UserResource {
                 .buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(user);
     }
+
+    @DeleteMapping(value = "delete/id/{id}")
+    public ResponseEntity<User> delete(@PathVariable Long id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+    /*In case of return 500 ("Internal Server Error"), it addresses tha fact that the user being
+    * point by the ID to be deleted, has request associations linked to it, making an integrity error*/
 }
+
+
