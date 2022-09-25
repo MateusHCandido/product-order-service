@@ -43,9 +43,18 @@ public class UserResource {
     public ResponseEntity<User> delete(@PathVariable Long id){
         service.delete(id);
         return ResponseEntity.noContent().build();
+        /*In case of return 500 ("Internal Server Error"), it addresses tha fact that the user being
+         * point by the ID to be deleted, has request associations linked to it, making an integrity error*/
     }
-    /*In case of return 500 ("Internal Server Error"), it addresses tha fact that the user being
-    * point by the ID to be deleted, has request associations linked to it, making an integrity error*/
+
+    @PutMapping(value = "update/id/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id,@RequestBody User user){
+        user = service.update(id, user);
+        return ResponseEntity.ok().body(user);
+    }
+
+
+
 }
 
 
