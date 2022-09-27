@@ -2,7 +2,11 @@ package com.product.service.services;
 
 import com.product.service.entities.User;
 import com.product.service.repositories.UserRepository;
+import com.product.service.services.exceptions.DatabaseException;
+import com.product.service.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +27,8 @@ public class UserService {
     //search user per id
     public User findById(Long id){
         Optional<User> object = user.findById(id);
-        return object.get();
+        //returning an Optional method in case an exception is thrown if the user is not found.
+        return object.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     //insert user
@@ -32,8 +37,17 @@ public class UserService {
     }
 
     //delete user per id
+
     public void delete(Long id){
-        user.deleteById(id);
+        try {
+            user.deleteById(id);
+            //attempt to delete user through non-existent ID, will return EmptyResultDataAccessException exception
+        }catch (EmptyResultDataAccessException error) {
+            throw new ResourceNotFoundException(id);
+            //Attempting to delete a user with other entities associated with it will generate an exception to type DataIntegrityViolationException
+        }catch (DataIntegrityViolationException error02){
+            throw new DatabaseException(error02.getMessage());
+        }
     }
 
     //update user
